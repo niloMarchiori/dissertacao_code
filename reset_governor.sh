@@ -1,0 +1,1 @@
+watch -n 1 "cpupower frequency-set -g ondemand"
