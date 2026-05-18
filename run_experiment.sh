@@ -1,5 +1,5 @@
-sudo -E sh -c "python topology/mid_iid_var_k.py;\
+sudo -E sh -c "python topology_ref/mid_iid_ref.py;\
         mnf_clean;\
-        python topology/mid_iid_ref.py"
+        python topology_ref/non_iid_ref.py"
 
-echo end
+echo end >> terminou.txt
