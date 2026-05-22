@@ -21,8 +21,6 @@ from federated.node import ClientSensor, ServerSensor
 from api import app,call_sensor, call_network
 from server import api_communication
 
-from server import api_communication
-
 import uvicorn
 import threading
 
