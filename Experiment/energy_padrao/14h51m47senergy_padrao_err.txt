@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "//flw/topology_ref/server/server_ref.py", line 304, in <module>
+    server()
+  File "//flw/topology_ref/server/server_ref.py", line 160, in server
+    controller = Controller(min_trainers=min_trainers, num_rounds=nun_rounds,
+  File "/flw/topology_ref/server/controlleropt.py", line 72, in __init__
+    self.creat_model_inputs()
+  File "/flw/topology_ref/server/controlleropt.py", line 167, in creat_model_inputs
+    self.model_inputs['kappa']=ctt['kappa']
+TypeError: 'NoneType' object does not support item assignment

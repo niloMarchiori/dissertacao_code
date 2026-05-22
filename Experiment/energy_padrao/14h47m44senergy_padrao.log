@@ -1,0 +1,23 @@
+2026-05-22 14:47:56,300 - EXECUT - INFO - starting server...
+2026-05-22 14:47:59,723 - EXECUT - INFO - trainer number sta1 just joined the pool
+2026-05-22 14:47:59,780 - EXECUT - INFO - trainer number sta2 just joined the pool
+2026-05-22 14:47:59,831 - EXECUT - INFO - trainer number sta5 just joined the pool
+2026-05-22 14:47:59,915 - EXECUT - INFO - trainer number sta0 just joined the pool
+2026-05-22 14:47:59,956 - EXECUT - INFO - trainer number sta3 just joined the pool
+2026-05-22 14:47:59,998 - EXECUT - INFO - trainer number sta4 just joined the pool
+2026-05-22 14:48:00,308 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta0', 'dataset_sz': 1192059072}
+2026-05-22 14:48:00,309 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta1', 'dataset_sz': 290856960}
+2026-05-22 14:48:00,349 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta2', 'dataset_sz': 247026432}
+2026-05-22 14:48:00,349 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta5', 'dataset_sz': 504808512}
+2026-05-22 14:48:00,349 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta3', 'dataset_sz': 837223680}
+2026-05-22 14:48:00,350 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta4', 'dataset_sz': 1098893952}
+2026-05-22 14:48:01,308 - METRIC - INFO - round: 1
+2026-05-22 14:48:01,308 - METRIC - INFO - n_selected: 6
+2026-05-22 14:48:01,308 - METRIC - INFO - {"selected_trainers": ["sta0", "sta1", "sta2", "sta3", "sta4", "sta5"]}
+2026-05-22 14:48:24,136 - EXECUT - INFO - received weights from trainer sta0!

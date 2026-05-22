@@ -25,7 +25,7 @@ import uvicorn
 import threading
 
 
-def topology(server_script,client_script, server_args,client_args,model_inputs,cpu_governor,experiment_name = 'Experiment',n_rounds=20):
+def topology(server_script,client_script, server_args,clients_args,cpu_governor,experiment_name = 'Experiment',n_rounds=20):
     setLogLevel('info')
 
     t = 4
@@ -70,11 +70,12 @@ def topology(server_script,client_script, server_args,client_args,model_inputs,c
                          ip6='fe80::2/64', panid='0xbeef', trickle_t=t,
                          privileged=True,
                          port_bindings={5000: 5000},
+                         clients_args=clients_args
                          )
 
     clients = []
     for i in range(NUM_CLIENTS):
-        client_args['num_samples']=model_inputs['num_samples'][i]
+        client_args=clients_args[i].copy()
         clients.append(net.addSensor(f'sta{i}', privileged=True,                                      
                                      cls=ClientSensor, script=client_script,
                                      voltage=3.7, #V
@@ -82,7 +83,8 @@ def topology(server_script,client_script, server_args,client_args,model_inputs,c
                                      ip6=f'fe80::{i+3}/64',
                                      numeric_id=i-1,
                                      args=client_args.copy(), volumes=volumes,
-                                     dimage='mininetfed:clientsensor'
+                                     dimage='mininetfed:clientsensor',
+                                     cpuset_cpus=client_args['cpuset_cpus']
                                      ))
     
     net.addAutoStop6()
@@ -177,5 +179,7 @@ def topology(server_script,client_script, server_args,client_args,model_inputs,c
     info('*** Stopping network...\n')
     net.stop()
 
+    api_communication.set_lower_frequency(freq=0.8)
+    api_communication.set_upper_frequency(freq=4.7)
     server.should_exit=True
     thread.join()

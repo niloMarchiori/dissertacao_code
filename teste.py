@@ -1,6 +1,5 @@
-import os
-import sys
+import numpy as np
+N=np.array([6000,12000,15000,15000,8000,4000])
 
-from topology_ref.server import api_communication
-from topology_ref.api import app, call_sensor, call_network
-from .server import clientSelection
+S=np.array([259700928, 519401856, 649277568, 649277568, 346301568, 173150784])
+print((S/N).mean())
