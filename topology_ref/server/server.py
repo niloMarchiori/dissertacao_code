@@ -9,8 +9,6 @@ import os
 import api_communication
 import pathlib
 
-
-
 def default(obj):
     if type(obj).__module__ == np.__name__:
         if isinstance(obj, np.ndarray):
@@ -56,9 +54,7 @@ def server():
     aggregator = server_args["aggregator"]
     nun_rounds = server_args["num_rounds"]
     stop_acc = server_args["stop_acc"]
-    client_args = server_args.get("client")
-
-    model_inputs=server_args.get("model_inputs")
+    clients_args = server_args.get("clients_args")
 
     output_csv_name=server_args.get("output_csv_name")
     output_dir_name=server_args.get("output_dir_name")
@@ -100,13 +96,12 @@ def server():
         m = json.loads(message.payload.decode("utf-8"))
 
         controller.update_metrics(m["id"], m['metrics'])
-        logger.info(
-            f'trainer number {m["id"]} just joined the pool', extra=executionType)
-        print(
-            f'trainer number {m["id"]} just joined the pool')
+        logger.info(f'trainer number {m["id"]} just joined the pool', extra=executionType)
+    
+        print(f'trainer number {m["id"]} just joined the pool')
 
         client.publish(
-            'minifed/serverArgs', json.dumps({"id": m["id"], "args": client_args}))
+            'minifed/serverArgs', json.dumps({"id": m["id"], "args": None}))
 
     # callback for preAggQueue: get weights of trainers, aggregate and send back
     def on_message_agg(client, userdata, message):
@@ -158,7 +153,7 @@ def server():
 
     # connect on queue
     controller = Controller(min_trainers=min_trainers, num_rounds=nun_rounds,
-                            client_selector=client_selector, aggregator=aggregator, model_inputs=model_inputs)
+                            client_selector=client_selector, aggregator=aggregator, clients_args=clients_args)
     
     client = mqtt.Client('server')
     client.connect(broker_addr, bind_port=1883)
@@ -179,13 +174,12 @@ def server():
     # wait trainers to connect
     while controller.get_num_trainers() < min_trainers:
         time.sleep(1)
-
+    
     controller.reset_num_responses()
     # ask for trainers dataset size
     trainer_list=controller.get_trainer_list()
     for t in trainer_list:
-        client.publish('minifed/ask_datasz',
-                       json.dumps({"id": t}, default=default))
+        client.publish('minifed/ask_datasz', json.dumps({"id": t}, default=default))
 
     # wait trainers sent dataset_sz
     while controller.get_num_responses() < controller.get_num_trainers():
@@ -219,41 +213,28 @@ def server():
         logger.info(
             f"{json.dumps({'selected_trainers': select_trainers})}", extra=metricType)
         
-        
-        TIMES=[]
+        time_start=time.time()
 
         for t in trainer_list:
             if t in select_trainers:
-                # logger.info(
-                #     f'selected: {t}', extra=metricType)
                 print(f'selected trainer {t} for training on round {controller.get_current_round()}')
-
                 m = json.dumps({'id': t, 'selected': True}).replace(' ', '')
 
 
                 idx=controller.trainer_list.index(t)
-                fmax=controller.model_inputs['fmax'][idx]*1E-9
-                fmin=controller.model_inputs['fmin'][idx]*1E-9
-                
-                api_communication.set_upper_frequency(freq=fmax)
-                api_communication.set_lower_frequency(freq=fmin)
-
-                time_start=time.time()
+                fmax=controller.clients[t]['fmax']
+                fmin=controller.clients[t]['fmin']
+                core=controller.clients[t]['cpuset_cpus']
+                api_communication.set_upper_frequency(freq=fmax,cores=core)
+                api_communication.set_lower_frequency(freq=fmin,cores=core)
 
                 client.publish('minifed/selectionQueue', m)
-                while not MODEL_TRAINED:
-                    pass
-                MODEL_TRAINED = False
-                time_end=time.time()
-                TIMES.append(time_end-time_start)
-                controller.output_data.curr_line[f'time_{t}']=time_end-time_start
+
             else:
-                # logger.info(
-                #     f'NOT_selected: {t}', extra=metricType)
                 m = json.dumps({'id': t, 'selected': False}).replace(' ', '')
                 client.publish('minifed/selectionQueue', m)
 
-        round_time=max(TIMES)
+        round_time=time.time()-time_start
         controller.output_data.curr_line['round_time']=round_time
 
         # wait for agg responses

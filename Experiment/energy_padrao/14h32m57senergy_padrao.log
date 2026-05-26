@@ -1,0 +1,25 @@
+2026-05-25 14:33:06,568 - EXECUT - INFO - starting server...
+2026-05-25 14:33:11,062 - EXECUT - INFO - trainer number sta1 just joined the pool
+2026-05-25 14:33:11,164 - EXECUT - INFO - trainer number sta2 just joined the pool
+2026-05-25 14:33:11,205 - EXECUT - INFO - trainer number sta0 just joined the pool
+2026-05-25 14:33:11,577 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta0', 'dataset_sz': 1148683008}
+2026-05-25 14:33:11,578 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta2', 'dataset_sz': 1267348608}
+2026-05-25 14:33:11,619 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta1', 'dataset_sz': 850706112}
+2026-05-25 14:33:12,577 - METRIC - INFO - round: 1
+2026-05-25 14:33:12,577 - METRIC - INFO - n_selected: 3
+2026-05-25 14:33:12,578 - METRIC - INFO - {"selected_trainers": ["sta0", "sta1", "sta2"]}
+2026-05-25 14:33:54,875 - EXECUT - INFO - received weights from trainer sta0!
+2026-05-25 14:33:58,128 - EXECUT - INFO - received weights from trainer sta2!
+2026-05-25 14:34:00,067 - EXECUT - INFO - received weights from trainer sta1!
+2026-05-25 14:34:00,739 - EXECUT - INFO - sent aggregated weights to trainers!
+2026-05-25 14:34:12,943 - METRIC - INFO - {"loss": 0.2388572245836258, "accuracy": 0.9309108257293701, "energy_consumption": 4.506308031730697, "selected": true, "host_energy_consumption": 0.3615254048, "client_name": "sta2"}
+2026-05-25 14:34:14,234 - METRIC - INFO - {"loss": 0.251384973526001, "accuracy": 0.9285148978233337, "energy_consumption": 3.7245958652819304, "selected": true, "host_energy_consumption": 0.32746786016, "client_name": "sta0"}
+2026-05-25 14:34:15,379 - METRIC - INFO - {"loss": 0.292765349149704, "accuracy": 0.9184182286262512, "energy_consumption": 4.851256037064982, "selected": true, "host_energy_consumption": 0.36021039628, "client_name": "sta1"}
+2026-05-25 14:34:15,755 - METRIC - INFO - mean_accuracy: 0.9259479840596517
+
+2026-05-25 14:34:15,756 - METRIC - INFO - round: 2
+2026-05-25 14:34:15,756 - METRIC - INFO - n_selected: 3
+2026-05-25 14:34:15,756 - METRIC - INFO - {"selected_trainers": ["sta0", "sta1", "sta2"]}

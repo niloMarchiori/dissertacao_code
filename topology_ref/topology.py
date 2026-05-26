@@ -41,7 +41,7 @@ def topology(server_script,client_script, server_args,clients_args,cpu_governor,
     "date_prefix": False
     }
 
-    NUM_CLIENTS = 6
+    NUM_CLIENTS = len(clients_args)
 
     net = MininetFed(**experiment_config, controller=[], experiment_name=experiment_name,
                      default_volumes=volumes, topology_file=sys.argv[0], )
@@ -100,15 +100,9 @@ def topology(server_script,client_script, server_args,clients_args,cpu_governor,
     info('*** Creating links...\n')
     net.addLink(ap1, srv1, cls=LoWPAN)
 
-    net.addLink(ap1, clients[0], cls=LoWPAN)
-    net.addLink(ap1, clients[1], cls=LoWPAN)
+    for client in clients:
+        net.addLink(ap1, client, cls=LoWPAN)
 
-    net.addLink(clients[0], clients[2], cls=LoWPAN)
-    net.addLink(clients[0], clients[4], cls=LoWPAN)
-
-    net.addLink(clients[1], clients[3], cls=LoWPAN)
-    net.addLink(clients[1], clients[5], cls=LoWPAN)
-    
     # net.addLink(ap1, h1)
     net.addLinkAutoStop(ap1)
 

@@ -5,20 +5,21 @@ import numpy as np
 
 def main(kappa=100):
     NUM_ROUNDS=60
-    NUM_CLIENTS=6
+    NUM_CLIENTS=3
     clients_args=[]
     for i in range(NUM_CLIENTS):
         num_samples=random.randint(5000, 30000)
-        f_min=np.random.randint(8, 20)/10
+        # f_min=np.random.randint(8, 20)/10
         client_args = {'name': f'sta{i}',
                        "mode": 'random same_samples',
                        'num_samples':num_samples,
                        "alpha": 2e-28,
                        "trainer_class": "TrainerMNIST", 
                        "c": random.randint(5, 30),
-                       "D": num_samples*43285.45, 
-                       "fmin": f_min,
-                       "fmax": np.random.randint(f_min*10, 40)/10,
+                       "S": num_samples*43285.45, 
+                       "fmin": 1+i/10,
+                    #    "fmax": np.random.randint(f_min*10, 40)/10,
+                       "fmax": 1+i/10,
                        "cpuset_cpus": str(i)
                        }
         clients_args.append(client_args)
@@ -29,17 +30,17 @@ def main(kappa=100):
                    "num_rounds": NUM_ROUNDS,
                    "stop_acc": 0.999, 
                    'client_selector': 'All', 
-                   'aggregator': "FedAvg", 
+                   'aggregator': "FedAvg",
+                   'clients_args': clients_args,
                    "output_dir_name":'Results/midiid_ref/',
                    "output_csv_name":"metrics_ref_all.csv"}
 
+    
     experiment_name = 'energy_padrao'
 
-    client_script="flw/topology_ref/client/client_ref.py"
-    
-   
-    server_args["output_csv_name"]="metrics_ref_all_n7.csv"
-    server_script="flw/topology_ref/server/server_ref.py"
+    client_script="flw/topology_ref/client/client.py"
+    server_script="flw/topology_ref/server/server.py"
+
     topology(server_script,
              client_script, 
              server_args,

@@ -13,12 +13,6 @@ except:
 
 from trainer import read_energy
 
-global ENERGY_CONSUMPTION
-ENERGY_CONSUMPTION = 0.0
-
-global HOST_ENERGY_CONSUMPTION
-HOST_ENERGY_CONSUMPTION = 0.0
-
 def read_host_energy():
     file_path = '/sys/class/powercap/intel-rapl:0/energy_uj'
     with open(file_path, 'r') as f:
@@ -110,11 +104,10 @@ def on_connect(client, userdata, flags, rc):
     subscribe_queues = ['minifed/selectionQueue',
                         'minifed/posAggQueue', 
                         'minifed/stopQueue', 
-                        'minifed/serverArgs',
-                        'minifed/ask_datasz']
+                        'minifed/ask_datasz',
+                        'minifed/serverArgs']
     for s in subscribe_queues:
         client.subscribe(s)
-
 
 # callback for serverArgs: update the args with new information send by the server, between the round 0 and the round 1.
 def on_server_args(client, userdata, message):
@@ -125,19 +118,14 @@ def on_server_args(client, userdata, message):
         client.publish('minifed/ready',
                        json.dumps({"id": CLIENT_NAME}, default=default))
 
-
 """
 callback for selectionQueue: the selection queue is sent by the server; 
 the client checks if it's selected for the current round or not. If yes, 
 the client trains and send the training results back.
 """
-def on_message_selection(client, userdata, message):
-    global selected
-    global ENERGY_CONSUMPTION
-    global HOST_ENERGY_CONSUMPTION
-    idl_energy = read_energy()
-    host_idle_energy = read_host_energy()
 
+
+def on_message_selection(client, userdata, message):
     msg = json.loads(message.payload.decode("utf-8"))
     if msg['id'] == CLIENT_NAME:
         if bool(msg['selected']) == True:
@@ -161,20 +149,9 @@ def on_message_selection(client, userdata, message):
             print(color.BOLD_START + 'new round starting' + color.BOLD_END)
             print(f'trainer was not selected for training this round')
 
-    actv_energy = read_energy()
-    ENERGY_CONSUMPTION += actv_energy - idl_energy
-
-    host_actv_energy = read_host_energy()
-    HOST_ENERGY_CONSUMPTION += host_actv_energy - host_idle_energy
-
 # callback for posAggQueue: gets aggregated weights and publish validation results on the metricsQueue
 def on_message_agg(client, userdata, message):
     global selected
-    global ENERGY_CONSUMPTION
-    global HOST_ENERGY_CONSUMPTION
-
-    idl_energy = read_energy()
-    host_idl_energy= read_host_energy()
 
     print(f'received aggregated weights!')
     msg = json.loads(message.payload.decode("utf-8"))
@@ -182,15 +159,7 @@ def on_message_agg(client, userdata, message):
                    for w in msg["agg_response"][CLIENT_NAME]["weights"]]
     results = trainer.all_metrics()
     results['selected'] = selected
-
-    actv_energy = read_energy()
-    host_actv_energy=read_host_energy()
-
-    ENERGY_CONSUMPTION += actv_energy - idl_energy
-    results['energy_consumption'] = ENERGY_CONSUMPTION
-
-    HOST_ENERGY_CONSUMPTION+=host_actv_energy-host_idl_energy
-    results['host_energy_consumption'] = HOST_ENERGY_CONSUMPTION*2.8E-10
+    results['energy_consumption'] = read_energy()
 
     response = json.dumps(
         {'id': CLIENT_NAME, "metrics": results}, default=default)
@@ -202,9 +171,6 @@ def on_message_agg(client, userdata, message):
 
     print(f'sending eval metrics!\n')
     client.publish('minifed/metricsQueue', response)
-
-    sent_energy = read_energy()
-    ENERGY_CONSUMPTION += sent_energy - actv_energy
 
 # callback for stopQueue: if conditions are met, stop training and exit process
 def on_message_stop(client, userdata, message):
@@ -235,8 +201,8 @@ client.on_connect = on_connect
 client.message_callback_add('minifed/selectionQueue', on_message_selection)
 client.message_callback_add('minifed/posAggQueue', on_message_agg)
 client.message_callback_add('minifed/stopQueue', on_message_stop)
-client.message_callback_add('minifed/serverArgs', on_server_args)
 client.message_callback_add('minifed/ask_datasz', on_message_ask_datasz)
+client.message_callback_add('minifed/serverArgs', on_server_args)
 
 # start waiting for jobs
 client.loop_start()

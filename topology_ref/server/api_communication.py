@@ -26,7 +26,7 @@ def set_cpu_governor(api_ip='172.17.0.1', api_port=8000, governor=''):
     except requests.exceptions.RequestException as e:
         print(f'Error occurred: {e}')
 
-def set_frequency(api_ip='172.17.0.1', api_port=8000, freq=2.2,cores=[i for i in range(24)]):
+def set_frequency(api_ip='172.17.0.1', api_port=8000, freq=2.2,cores=''):
     url = f'http://{api_ip}:{api_port}/set_cpufreq/'
     payload = {"value": freq, "cores": cores}
     headers = {'Content-Type': 'application/json'}
@@ -39,7 +39,7 @@ def set_frequency(api_ip='172.17.0.1', api_port=8000, freq=2.2,cores=[i for i in
     except requests.exceptions.RequestException as e:
         print(f'Error occurred: {e}')
 
-def set_upper_frequency(api_ip='172.17.0.1', api_port=8000, freq=2.2,cores=[i for i in range(24)]):
+def set_upper_frequency(api_ip='172.17.0.1', api_port=8000, freq=2.2,cores=''):
     url = f'http://{api_ip}:{api_port}/set_cpu_upper_freq/'
     payload = {"value": freq, "cores": cores}
     headers = {'Content-Type': 'application/json'}
@@ -52,7 +52,7 @@ def set_upper_frequency(api_ip='172.17.0.1', api_port=8000, freq=2.2,cores=[i fo
     except requests.exceptions.RequestException as e:
         print(f'Error occurred: {e}')
 
-def set_lower_frequency(api_ip='172.17.0.1', api_port=8000, freq=2.2,cores=[i for i in range(24)]):
+def set_lower_frequency(api_ip='172.17.0.1', api_port=8000, freq=2.2,cores=''):
     url = f'http://{api_ip}:{api_port}/set_cpu_lower_freq/'
     payload = {"value": freq, "cores": cores}
     headers = {'Content-Type': 'application/json'}

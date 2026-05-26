@@ -12,6 +12,16 @@ import json
 import copy
 import sys
 
+class Client:
+    def __init__(self, id, fmin, fmax, alpha, c, cpus,dataset_size,**kwargs):
+        self.id = id
+        self.alpha = alpha
+        self.S = dataset_size
+        self.fmin = fmin
+        self.fmax = fmax
+        self.c = c
+        self.cpus = cpus
+
 
 def mkdir(dir_path):
     pathlib.Path(dir_path).mkdir(parents=True, exist_ok=True)
@@ -44,7 +54,7 @@ def criar_objeto(pacote, nome_classe):
 
 class Controller:
     def __init__(self, min_trainers=2, num_rounds=5, client_selector='Random', aggregator="FedAvg", clients_args=None):
-        self.trainer_list = []
+        self._trainer_list = []
         self.min_trainers = min_trainers
         # self.trainers_per_round = trainers_per_round
         self.current_round = 0
@@ -59,11 +69,16 @@ class Controller:
         print("CLIENT_SELECTOR=", client_selector)
         self.aggregator = criar_objeto("aggregator", aggregator)
         self.metrics = {}       
+
         self.output_data=OutPutData()
 
-        self.clients = {}
+        clients = {}
         for c in clients_args:
-            self.clients[c['name']] = c
+            clients[c['name']] = c
+            
+    @property
+    def trainer_list(self):
+        return self._trainer_list.keys()
     
     # getters
     def get_trainer_list(self):

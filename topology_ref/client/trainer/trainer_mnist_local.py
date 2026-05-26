@@ -172,7 +172,7 @@ class TrainerMNIST:
             test_labels), depth=num_classes).numpy()
         
         classes_reais = np.argmax(test_labels, axis=1)
-        print(f"DEBUG-As classes são: {np.unique(classes_reais)}", file=sys.stderr)
+        print(f"DEBUG-Classes disponiveis: {np.unique(classes_reais)}", file=sys.stderr)
 
         if 'n_classes' in self.mode:
             # Criar um gerador de números aleatórios usando self.id como seed
@@ -216,7 +216,7 @@ class TrainerMNIST:
             pass
 
         classes_reais = np.argmax(test_labels, axis=1)
-        print(f"DEBUG-As classes são: {np.unique(classes_reais)}", file=sys.stderr)
+        print(f"DEBUG-Classes selecionadas: {np.unique(classes_reais)}", file=sys.stderr)
         return train_images, train_labels, test_images, test_labels
 
     def train_model(self,callbacks=None):

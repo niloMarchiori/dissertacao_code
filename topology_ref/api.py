@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 class Frequency(BaseModel):
     value: float
-    cores: list
+    cores: str
 
 class Governor(BaseModel):
     governor:str
@@ -16,30 +16,28 @@ def call_network():
     return RuntimeError("'call_network' Not implemented")
 
 def cmd_set_freq(value,cores=None):
-    if cores is None:
+    print(f'Try set freq --F-- Value: {value}, cores: {cores if cores else "all"}')
+    if cores == '':
         os.system(f'sudo cpupower frequency-set -d {value}GHz -u {value}GHz')
     else:
-        core_list = ",".join(str(c) for c in cores)
-        os.system(f'sudo cpupower -c {core_list} frequency-set -d {value}GHz -u {value}GHz')
+        os.system(f'sudo cpupower -c {cores} frequency-set -d {value}GHz -u {value}GHz')
 
 def cmd_set_cpu_governor(governor):
     os.system(f'sudo cpupower frequency-set -g {governor}')
 
 def cmd_set_upper_freq(value, cores=None):
-    print('Try set freq to: ',value)
-    if cores is None:
+    print(f'Try set freq --U-- Value: {value}, cores: {cores if cores else "all"}')
+    if cores == '':
         os.system(f'sudo cpupower frequency-set -u {value}GHz')
     else:
-        core_list = ",".join(str(c) for c in cores)
-        os.system(f'sudo cpupower -c {core_list} frequency-set -u {value}GHz')
+        os.system(f'sudo cpupower -c {cores} frequency-set -u {value}GHz')
 
 def cmd_set_lower_freq(value, cores=None):
-    print('Try set freq to: ',value)
-    if cores is None:
+    print(f'Try set freq --D-- Value: {value}, cores: {cores if cores else "all"}')
+    if cores == '':
         os.system(f'sudo cpupower frequency-set -d {value}GHz')
     else:
-        core_list = ",".join(str(c) for c in cores)
-        os.system(f'sudo cpupower -c {core_list} frequency-set -d {value}GHz')
+        os.system(f'sudo cpupower -c {cores} frequency-set -d {value}GHz')
 
 app = FastAPI()
 
