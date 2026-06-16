@@ -31,11 +31,11 @@ def main(kappa=100):
                    'client_selector': 'All', 
                    'aggregator': "FedAvg",
                    'clients_args': clients_args,
-                   "output_dir_name":'Results/midiid_ref/',
-                   "output_csv_name":"metrics_ref_all.csv"}
+                   "output_dir_name":'Results/calibrar_alpha/',
+                   "output_csv_name":"calibrar_alpha.csv"}
 
     
-    experiment_name = 'energy_padrao'
+    experiment_name = 'calibrar_alpha'
 
     client_script="flw/calibrar_const/client/client.py"
     server_script="flw/calibrar_const/server/server.py"
