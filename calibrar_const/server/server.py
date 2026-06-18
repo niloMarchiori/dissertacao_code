@@ -119,6 +119,10 @@ def server():
         controller.add_client_training_response(
             m['id'], client_training_response)
         controller.update_num_responses()
+
+        print(f"Pesos recebidos de: {m['id']}")
+        print(f"Pesos recebidos de: {m['id']}", file=sys.stderr)
+
         logger.info(
             f'received weights from trainer {m["id"]}!', extra=executionType)
         print(f'received weights from trainer {m["id"]}!')
@@ -216,9 +220,10 @@ def server():
         
         time_start=time.time()
 
+        print(f'selected trainers {select_trainers} for training on round {controller.get_current_round()}')
+
         for t in trainer_list:
             if t in select_trainers:
-                print(f'selected trainer {t} for training on round {controller.get_current_round()}')
                 m = json.dumps({'id': t, 'selected': True}).replace(' ', '')
 
                 fmin=controller.clients[t]['fmin']
@@ -227,7 +232,7 @@ def server():
                 round=controller.get_current_round()
 
                 freq=fmin + 0.1*round
-                print(f'setting frequency {freq} for trainer {t} on round {round}')
+                #print(f'setting frequency {freq} for trainer {t} on round {round}')
                 api_communication.set_frequency(freq=freq,cores=core)
 
                 
@@ -245,6 +250,8 @@ def server():
             time.sleep(1)
         controller.reset_num_responses()  # reset num_responses for next round
 
+        print("Todos os pesos recebidos")
+        
         # aggregate and send
         agg_response = controller.agg_weights()
         response = json.dumps({'agg_response': agg_response}, default=default)

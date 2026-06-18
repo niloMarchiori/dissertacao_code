@@ -158,8 +158,6 @@ def on_message_selection(client, userdata, message):
 
 # callback for posAggQueue: gets aggregated weights and publish validation results on the metricsQueue
 def on_message_agg(client, userdata, message):
-    global selected
-
     print(f'received aggregated weights!')
     msg = json.loads(message.payload.decode("utf-8"))
     agg_weights = [np.asarray(w, dtype=np.float32)

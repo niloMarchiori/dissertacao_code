@@ -58,7 +58,7 @@ def topology(server_script,client_script, server_args,clients_args,cpu_governor,
     ap1 = net.addAPSensor('ap1', cls=DockerP4Sensor, ip6='fe80::1/64', panid='0xbeef',
                           dodag_root=True, storing_mode=mode, privileged=True,
                           volumes=[path + "/:/root", "/tmp/.X11-unix:/tmp/.X11-unix:rw"],
-                          dimage=dimage, cpu_shares=20, netcfg=True, trickle_t=t,
+                          dimage=dimage, netcfg=True, trickle_t=t,
                           loglevel="info",
                           thriftport=50001,  IPBASE="172.17.0.0/24",
                           **args)

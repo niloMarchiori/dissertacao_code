@@ -19,7 +19,7 @@ def main(kappa=100):
                        "S": num_samples*43285.45, 
                        "fmin": f_min,
                        "fmax": 3.9,
-                       "cpuset_cpus": str(i)
+                       "cpuset_cpus": str(i+2)
                        }
         clients_args.append(client_args)
     

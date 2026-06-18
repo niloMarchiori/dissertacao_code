@@ -5,7 +5,7 @@ import numpy as np
 
 def main(kappa=100):
     NUM_ROUNDS=3
-    NUM_CLIENTS=22
+    NUM_CLIENTS=20
     clients_args=[]
     for i in range(NUM_CLIENTS):
         num_samples=random.randint(5000, 30000)

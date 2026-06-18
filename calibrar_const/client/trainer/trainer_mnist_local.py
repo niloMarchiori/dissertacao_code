@@ -87,7 +87,7 @@ class TrainerMNIST:
         # Initiate
         self.id = id
         self.name = name
-        self.n_epochs=7
+        self.n_epochs=5
         # self.mode = mode  # 'class' 'random' 'all'
         self.__dict__.update(args)
         mode = self.mode
