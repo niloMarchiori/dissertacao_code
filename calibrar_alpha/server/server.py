@@ -151,6 +151,7 @@ def server():
         msg=json.loads(message.payload.decode("utf-8"))
         logger.info(f"mensagem de data_sz recebida: \n {msg}", extra=executionType)    
         controller.update_dataset_size(msg['id'],msg['dataset_sz'])
+        controller.output_data.curr_line[f'{msg["id"]}_datasz']=msg['dataset_sz']
 
     # connect on queue
     controller = Controller(min_trainers=min_trainers, num_rounds=nun_rounds,
