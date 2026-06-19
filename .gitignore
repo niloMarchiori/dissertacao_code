@@ -31,3 +31,24 @@ client_log/
 ./data/MNIST/
 ./dist/
 ./mininetfed.egg-info/
+
+# Python artifacts
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.cache/
+
+# Editor and temporary files
+*.swp
+*~
+.DS_Store
+
+# Log files and experiment outputs
+*.log
+logs/
+*/logs/
+Experiments/
+client_log/

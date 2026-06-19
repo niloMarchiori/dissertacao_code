@@ -1,0 +1,28 @@
+server args: {'min_trainers': 2, 'num_rounds': 3, 'stop_acc': 0.999, 'client_selector': 'All', 'aggregator': 'FedAvg', 'clients_args': [{'name': 'sta0', 'mode': 'random same_samples', 'num_samples': 28689, 'alpha': 2e-28, 'trainer_class': 'TrainerMNIST', 'c': 10, 'S': 1241816275.05, 'fmin': 1.9, 'fmax': 2.0, 'cpuset_cpus': '0'}, {'name': 'sta1', 'mode': 'random same_samples', 'num_samples': 11036, 'alpha': 2e-28, 'trainer_class': 'TrainerMNIST', 'c': 26, 'S': 477698226.2, 'fmin': 0.8, 'fmax': 2.4, 'cpuset_cpus': '1'}], 'output_dir_name': 'Results/midiid_ref/', 'output_csv_name': 'metrics_ref_all.csv'}
+Exception in thread Thread-1 (_thread_main):
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/threading.py", line 1016, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.10/threading.py", line 953, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/paho/mqtt/client.py", line 3591, in _thread_main
+    self.loop_forever(retry_first_connection=True)
+  File "/usr/local/lib/python3.10/dist-packages/paho/mqtt/client.py", line 1756, in loop_forever
+    rc = self._loop(timeout)
+  File "/usr/local/lib/python3.10/dist-packages/paho/mqtt/client.py", line 1164, in _loop
+    rc = self.loop_read()
+  File "/usr/local/lib/python3.10/dist-packages/paho/mqtt/client.py", line 1556, in loop_read
+    rc = self._packet_read()
+  File "/usr/local/lib/python3.10/dist-packages/paho/mqtt/client.py", line 2439, in _packet_read
+    rc = self._packet_handle()
+  File "/usr/local/lib/python3.10/dist-packages/paho/mqtt/client.py", line 3033, in _packet_handle
+    return self._handle_publish()
+  File "/usr/local/lib/python3.10/dist-packages/paho/mqtt/client.py", line 3327, in _handle_publish
+    self._handle_on_message(message)
+  File "/usr/local/lib/python3.10/dist-packages/paho/mqtt/client.py", line 3556, in _handle_on_message
+    callback(self, self._userdata, message)
+  File "/flw/topology_AFEA/server/server.py", line 154, in on_message_post_datasz
+    controller.update_dataset_size(msg['id'],msg['dataset_sz'])
+  File "/flw/topology_AFEA/server/controlleropt.py", line 154, in update_dataset_size
+    self.model_inputs['s']=dataset_sz
+AttributeError: 'Controller' object has no attribute 'model_inputs'
