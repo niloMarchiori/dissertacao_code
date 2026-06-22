@@ -8,14 +8,9 @@ for i in {1..5}; do
     echo "Running iteration $i of 5..."
     echo "=========================================="
     mnf_clean
-    python calibrar_const/calibrar_alpha.py
-    
-    if [ $i -lt 5 ]; then
-        echo "Cleaning up with mnf_clean..."
-        mnf_clean
-        echo "Cleanup complete. Waiting before next iteration..."
-        sleep 2
-    fi
+    sleep 2
+    python calibrar_cn/calibrar_cn.py
+    sleep 2
 done
 
 echo "=========================================="
