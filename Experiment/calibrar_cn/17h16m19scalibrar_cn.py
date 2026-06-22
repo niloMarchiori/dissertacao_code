@@ -1,7 +1,7 @@
 from topo_wired import topology_wired as topology
 import json
 
-NUM_ROUNDS=5
+NUM_ROUNDS=30
 
 with open('calibrar_cn/sta_const.json') as f:
     sta_const = json.load(f)

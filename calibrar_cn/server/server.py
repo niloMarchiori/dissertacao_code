@@ -229,7 +229,7 @@ def server():
 
                 curr_round=controller.get_current_round()
 
-                delta_f=round((fmax-fmin)/(nun_rounds))
+                delta_f=round((fmax-fmin)/(nun_rounds),2)
                 freq=fmin + delta_f*(curr_round)
                 print(f'setting frequency {freq} for trainer {t} on round {curr_round}', file=sys.stderr)
                 api_communication.set_frequency(freq=freq,cores=core)
