@@ -3,6 +3,7 @@ import re
 from threading import Thread as thread
 from datetime import datetime
 from time import sleep
+from traceback import format_exc
 
 from mininet.log import error
 
@@ -27,14 +28,17 @@ class EnergyFreqBased(object):
         EnergyFreqBased.thread_.start()
 
     def start(self, nodes):
-        try:
-            while self.thread_._keep_alive:
-                sleep(0.1)  # set sleep time to 1 second
-                for node in nodes:
-                    if(self.thread_._keep_alive):
-                        node.consumption += self.get_energy(node)
-        except:
-            error("Error with the energy consumption function\n")
+        while self.thread_._keep_alive:
+            sleep(0.1)  # set sleep time to 1 second
+            for node in nodes:
+                if not self.thread_._keep_alive:
+                    break
+                try:
+                    node.consumption += self.get_energy(node)
+                except Exception as exc:
+                    node_name = getattr(node, 'name', repr(node))
+                    error("Error computing energy for node %s: %s\n" % (node_name, exc))
+                    error(format_exc())
 
     def get_cpu_freq(self, node):
         cmd_out = node.pexec("cat /proc/cpuinfo | grep MHz", shell=True)[0]
@@ -42,7 +46,10 @@ class EnergyFreqBased(object):
             cmd_out_lines = cmd_out.strip().split('\n')
             cmd_out_values = [float(line.split(':')[1].strip()) for line in cmd_out_lines]
             return cmd_out_values
-        except:
+        except Exception as exc:
+            node_name = getattr(node, 'name', repr(node))
+            error("Error parsing CPU frequency for node %s: %s\n" % (node_name, exc))
+            error(format_exc())
             return 0
 
 

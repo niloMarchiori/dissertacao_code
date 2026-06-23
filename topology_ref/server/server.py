@@ -106,9 +106,6 @@ def server():
     # callback for preAggQueue: get weights of trainers, aggregate and send back
     def on_message_agg(client, userdata, message):
 
-        global MODEL_TRAINED
-        MODEL_TRAINED = True
-
         m = json.loads(message.payload.decode("utf-8"))
         client_training_response = {}
         weights = [np.asarray(w, dtype=np.float32) for w in m['weights']]
@@ -125,6 +122,10 @@ def server():
         logger.info(
             f'received weights from trainer {m["id"]}!', extra=executionType)
         print(f'received weights from trainer {m["id"]}!')
+
+        controller.output_data.curr_line[f'host_consumption_{m["id"]}']=m['host_energy_consumption']
+        controller.output_data.curr_line[f'training_time_{m["id"]}']=m['training_time']
+
 
     # def create_string_from_json(data):
     #     return " - ".join(f"{name}: {value}" for name, value in data.items())
@@ -150,6 +151,7 @@ def server():
         msg=json.loads(message.payload.decode("utf-8"))
         logger.info(f"mensagem de data_sz recebida: \n {msg}", extra=executionType)    
         controller.update_dataset_size(msg['id'],msg['dataset_sz'])
+        controller.output_data.curr_line[f'{msg["id"]}_datasz']=msg['dataset_sz']
 
     # connect on queue
     controller = Controller(min_trainers=min_trainers, num_rounds=nun_rounds,
@@ -215,19 +217,17 @@ def server():
         
         time_start=time.time()
 
+
         for t in trainer_list:
             if t in select_trainers:
                 print(f'selected trainer {t} for training on round {controller.get_current_round()}')
                 m = json.dumps({'id': t, 'selected': True}).replace(' ', '')
 
-
-                idx=controller.trainer_list.index(t)
-                fmax=controller.clients[t]['fmax']
                 fmin=controller.clients[t]['fmin']
+                fmax=controller.clients[t]['fmax']
                 core=controller.clients[t]['cpuset_cpus']
-                api_communication.set_upper_frequency(freq=fmax,cores=core)
                 api_communication.set_lower_frequency(freq=fmin,cores=core)
-
+                api_communication.set_upper_frequency(freq=fmax,cores=core)
                 client.publish('minifed/selectionQueue', m)
 
             else:
