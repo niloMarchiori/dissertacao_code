@@ -129,8 +129,10 @@ def on_message_selection(client, userdata, message):
     msg = json.loads(message.payload.decode("utf-8"))
     if msg['id'] == CLIENT_NAME:
         if bool(msg['selected']) == True:
+            
+            energy_host_before = read_host_energy()
+            t_inicio=time.time()
             selected = True
-
 
             print(color.BOLD_START + 'new round starting' + color.BOLD_END)
             print(
@@ -139,8 +141,13 @@ def on_message_selection(client, userdata, message):
 
             resp_dict = {'id': CLIENT_NAME, 'weights': trainer.get_weights(
             ), 'num_samples': trainer.get_num_samples()}
+
+            resp_dict['training_time'] = time.time() - t_inicio
+            resp_dict['host_energy_consumption'] = read_host_energy() - energy_host_before
+
             if has_method(trainer, 'get_training_args'):
                 resp_dict['training_args'] = trainer.get_training_args()
+
             response = json.dumps(resp_dict, default=default)
             client.publish('minifed/preAggQueue', response)
             print(f'finished training and sent weights!')
@@ -160,7 +167,7 @@ def on_message_agg(client, userdata, message):
     results = trainer.all_metrics()
     results['selected'] = selected
     results['energy_consumption'] = read_energy()
-
+    
     response = json.dumps(
         {'id': CLIENT_NAME, "metrics": results}, default=default)
     trainer.update_weights(agg_weights)

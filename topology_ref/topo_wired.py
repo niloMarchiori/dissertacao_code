@@ -16,20 +16,20 @@ from containernet.energy import Energy
 from energy import EnergyFreqBased
 
 from federated.net import MininetFed
-from federated.node import Client, Server
+from federated.node import Client as BaseClient, Server
+
+class Client(BaseClient):
+    def __init__(self, *args, **kwargs):
+        self.consumption = 0
+        self.voltage = 4.0
+        self.curret_freq = 0.8
+        super().__init__(*args, **kwargs)
 
 from api import app, call_sensor, call_network
 from server import api_communication
 
 import uvicorn
-import threading
-
-class Client_(Client):
-    def __init__(self, name, script, numeric_id, args=None, dimage=None, cpu_quota=None, volumes=None, mem_limit=None, **kwargs):
-        super().__init__(name, script, numeric_id, args=None, dimage=None,
-                 cpu_quota=None, volumes=None, mem_limit=None, **kwargs)
-        self.consumption = 0.0  # Initialize energy consumption attribute
-        
+import threading       
         
 
 
@@ -67,7 +67,7 @@ def topology_wired(server_script, client_script, server_args, clients_args, cpu_
     clients = []
     for i in range(NUM_CLIENTS):
         client_args = clients_args[i].copy()
-        clients.append(net.addHost(f'sta{i}', cls=Client_, script=client_script,
+        clients.append(net.addHost(f'sta{i}', cls=Client, script=client_script,
                                    privileged=True,
                                    numeric_id=i,
                                    args=client_args.copy(), 
@@ -102,7 +102,7 @@ def topology_wired(server_script, client_script, server_args, clients_args, cpu_
     app.dependency_overrides[call_network] = pass_network
     app.dependency_overrides[call_sensor] = pass_clients
 
-    config = uvicorn.Config(app, host="0.0.0.0", port=8000)
+    config = uvicorn.Config(app, host="0.0.0.0", port=8000, log_level="error", access_log=False)
     server = uvicorn.Server(config)
 
     thread = threading.Thread(target=server.run)

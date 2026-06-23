@@ -1,5 +1,6 @@
 from fastapi import FastAPI,Depends
 import os
+import subprocess
 from pydantic import BaseModel
 
 class Frequency(BaseModel):
@@ -15,29 +16,36 @@ def call_sensor():
 def call_network():
     return RuntimeError("'call_network' Not implemented")
 
-def cmd_set_freq(value,cores=None):
-    print(f'Try set freq --F-- Value: {value}, cores: {cores if cores else "all"}')
+def _run_cpupower(args):
+    try:
+        subprocess.run(args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+    except Exception:
+        pass
+
+
+def cmd_set_freq(value, cores=None):
     if cores == '':
-        os.system(f'sudo cpupower frequency-set -d {value}GHz -u {value}GHz')
+        _run_cpupower(['sudo', 'cpupower', 'frequency-set', '-d', f'{value}GHz', '-u', f'{value}GHz'])
     else:
-        os.system(f'sudo cpupower -c {cores} frequency-set -d {value}GHz -u {value}GHz')
+        _run_cpupower(['sudo', 'cpupower', '-c', cores, 'frequency-set', '-d', f'{value}GHz', '-u', f'{value}GHz'])
+
 
 def cmd_set_cpu_governor(governor):
-    os.system(f'sudo cpupower frequency-set -g {governor}')
+    _run_cpupower(['sudo', 'cpupower', 'frequency-set', '-g', governor])
+
 
 def cmd_set_upper_freq(value, cores=None):
-    print(f'Try set freq --U-- Value: {value}, cores: {cores if cores else "all"}')
     if cores == '':
-        os.system(f'sudo cpupower frequency-set -u {value}GHz')
+        _run_cpupower(['sudo', 'cpupower', 'frequency-set', '-u', f'{value}GHz'])
     else:
-        os.system(f'sudo cpupower -c {cores} frequency-set -u {value}GHz')
+        _run_cpupower(['sudo', 'cpupower', '-c', cores, 'frequency-set', '-u', f'{value}GHz'])
+
 
 def cmd_set_lower_freq(value, cores=None):
-    print(f'Try set freq --D-- Value: {value}, cores: {cores if cores else "all"}')
     if cores == '':
-        os.system(f'sudo cpupower frequency-set -d {value}GHz')
+        _run_cpupower(['sudo', 'cpupower', 'frequency-set', '-d', f'{value}GHz'])
     else:
-        os.system(f'sudo cpupower -c {cores} frequency-set -d {value}GHz')
+        _run_cpupower(['sudo', 'cpupower', '-c', cores, 'frequency-set', '-d', f'{value}GHz'])
 
 app = FastAPI()
 
