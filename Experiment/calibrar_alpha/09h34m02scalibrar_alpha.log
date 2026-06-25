@@ -1,0 +1,37 @@
+2026-06-25 09:34:13,454 - EXECUT - INFO - starting server...
+2026-06-25 09:34:18,086 - EXECUT - INFO - trainer number sta0 just joined the pool
+2026-06-25 09:34:18,151 - EXECUT - INFO - trainer number sta1 just joined the pool
+2026-06-25 09:34:18,152 - EXECUT - INFO - trainer number sta3 just joined the pool
+2026-06-25 09:34:18,193 - EXECUT - INFO - trainer number sta2 just joined the pool
+2026-06-25 09:34:18,311 - EXECUT - INFO - trainer number sta6 just joined the pool
+2026-06-25 09:34:18,353 - EXECUT - INFO - trainer number sta4 just joined the pool
+2026-06-25 09:34:18,353 - EXECUT - INFO - trainer number sta5 just joined the pool
+2026-06-25 09:34:18,353 - EXECUT - INFO - trainer number sta7 just joined the pool
+2026-06-25 09:34:18,558 - EXECUT - INFO - trainer number sta9 just joined the pool
+2026-06-25 09:34:18,600 - EXECUT - INFO - trainer number sta10 just joined the pool
+2026-06-25 09:34:18,600 - EXECUT - INFO - trainer number sta8 just joined the pool
+2026-06-25 09:34:19,464 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta1', 'dataset_sz': 432851712}
+2026-06-25 09:34:19,464 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta0', 'dataset_sz': 432851712}
+2026-06-25 09:34:19,464 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta3', 'dataset_sz': 432851712}
+2026-06-25 09:34:19,464 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta2', 'dataset_sz': 432851712}
+2026-06-25 09:34:19,464 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta10', 'dataset_sz': 432851712}
+2026-06-25 09:34:19,464 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta5', 'dataset_sz': 432851712}
+2026-06-25 09:34:19,464 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta4', 'dataset_sz': 432851712}
+2026-06-25 09:34:19,464 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta6', 'dataset_sz': 432851712}
+2026-06-25 09:34:19,465 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta7', 'dataset_sz': 432851712}
+2026-06-25 09:34:19,465 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta9', 'dataset_sz': 432851712}
+2026-06-25 09:34:19,504 - EXECUT - INFO - mensagem de data_sz recebida: 
+ {'id': 'sta8', 'dataset_sz': 432851712}
+2026-06-25 09:34:20,465 - METRIC - INFO - round: 1
+2026-06-25 09:34:20,465 - METRIC - INFO - n_selected: 11
+2026-06-25 09:34:20,465 - METRIC - INFO - {"selected_trainers": ["sta0", "sta1", "sta10", "sta2", "sta3", "sta4", "sta5", "sta6", "sta7", "sta8", "sta9"]}

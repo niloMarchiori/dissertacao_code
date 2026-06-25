@@ -4,7 +4,7 @@ import numpy as np
 
 
 
-NUM_ROUNDS=40
+NUM_ROUNDS=3
 NUM_CLIENTS=11
 clients_args=[]
 for i in range(NUM_CLIENTS):

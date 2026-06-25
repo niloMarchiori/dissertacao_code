@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "//flw/calibrar_alpha/server/server.py", line 289, in <module>
+    server()
+  File "//flw/calibrar_alpha/server/server.py", line 227, in server
+    freq=round(freq,2)
+TypeError: 'int' object is not callable
