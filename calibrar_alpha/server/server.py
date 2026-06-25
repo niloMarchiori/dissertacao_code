@@ -217,21 +217,20 @@ def server():
         
         time_start=time.time()
 
+        fmin=0.9
+        fmax=4.2
+        core=''
+
+        delta_freq=(fmax-fmin)/nun_rounds
+        round=controller.get_current_round()
+        freq=fmin + delta_freq*round
+        print(f'setting frequency {freq} on round {round}')
+        api_communication.set_frequency(freq=freq,cores=core)
+
         for t in trainer_list:
             if t in select_trainers:
                 print(f'selected trainer {t} for training on round {controller.get_current_round()}')
                 m = json.dumps({'id': t, 'selected': True}).replace(' ', '')
-
-                fmin=controller.clients[t]['fmin']
-                core=controller.clients[t]['cpuset_cpus']
-
-                round=controller.get_current_round()
-
-                freq=fmin + 0.1*round
-                print(f'setting frequency {freq} for trainer {t} on round {round}')
-                api_communication.set_frequency(freq=freq,cores=core)
-
-                
                 client.publish('minifed/selectionQueue', m)
 
             else:
