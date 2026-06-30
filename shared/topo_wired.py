@@ -117,7 +117,7 @@ def topology_wired(server_script, client_script, server_args, clients_args, cpu_
     # -----------------------------------------------------------------------------------------
 
     info("*** Measuring energy consumption\n")
-    EnergyFreqBased(net.sensors)
+    EnergyFreqBased(clients)
 
     info('*** Running devices...\n')
     net.runFlDevices()
@@ -126,9 +126,8 @@ def topology_wired(server_script, client_script, server_args, clients_args, cpu_
 
     sleep(1)
 
-    info(clients[0].resources)
-    info(srv1.resources)
-    CLI(net)
+
+    # CLI(net)
 
     info('*** Server...\n')
     srv1.run(broker_addr=net.broker_addr, experiment_controller=net.experiment_controller)

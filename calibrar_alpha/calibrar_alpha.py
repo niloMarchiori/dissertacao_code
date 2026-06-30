@@ -9,7 +9,7 @@ from server import api_communication
 import random
 
 
-NUM_ROUNDS=40
+NUM_ROUNDS=5
 NUM_CLIENTS=11
 clients_args=[]
 for i in range(NUM_CLIENTS):

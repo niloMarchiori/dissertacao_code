@@ -11,7 +11,7 @@ try:
 except:
     pass
 
-from trainer import read_energy,read_cpu_voltage
+from trainer import read_energy,read_cpu_voltage, read_cpu_freq
 
 def read_host_energy():
     file_path = '/sys/class/powercap/intel-rapl:0/energy_uj'
@@ -144,7 +144,8 @@ def on_message_selection(client, userdata, message):
 
             resp_dict['training_time'] = time.time() - t_inicio
             resp_dict['host_energy_consumption'] = read_host_energy() - energy_host_before
-            resp_dict[' cpu_voltage'] = read_cpu_voltage()
+            resp_dict['cpu_voltage'] = read_cpu_voltage()
+            resp_dict['cpus_freqs'] = read_cpu_freq()
 
             if has_method(trainer, 'get_training_args'):
                 resp_dict['training_args'] = trainer.get_training_args()

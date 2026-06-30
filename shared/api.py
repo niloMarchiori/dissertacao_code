@@ -18,26 +18,26 @@ def call_network():
 def cmd_set_freq(value,cores=None):
     print(f'Try set freq --F-- Value: {value}, cores: {cores if cores else "all"}')
     if cores == '':
-        os.system(f'sudo cpupower frequency-set -d {value}GHz -u {value}GHz')
+        os.system(f'sudo cpupower frequency-set -d {value}GHz -u {value}GHz > /dev/null 2>&1')
     else:
-        os.system(f'sudo cpupower -c {cores} frequency-set -d {value}GHz -u {value}GHz')
+        os.system(f'sudo cpupower -c {cores} frequency-set -d {value}GHz -u {value}GHz > /dev/null 2>&1')
 
 def cmd_set_cpu_governor(governor):
-    os.system(f'sudo cpupower frequency-set -g {governor}')
+    os.system(f'sudo cpupower frequency-set -g {governor} > /dev/null 2>&1')
 
 def cmd_set_upper_freq(value, cores=None):
     print(f'Try set freq --U-- Value: {value}, cores: {cores if cores else "all"}')
     if cores == '':
-        os.system(f'sudo cpupower frequency-set -u {value}GHz')
+        os.system(f'sudo cpupower frequency-set -u {value}GHz > /dev/null 2>&1')
     else:
-        os.system(f'sudo cpupower -c {cores} frequency-set -u {value}GHz')
+        os.system(f'sudo cpupower -c {cores} frequency-set -u {value}GHz > /dev/null 2>&1')
 
 def cmd_set_lower_freq(value, cores=None):
     print(f'Try set freq --D-- Value: {value}, cores: {cores if cores else "all"}')
     if cores == '':
-        os.system(f'sudo cpupower frequency-set -d {value}GHz')
+        os.system(f'sudo cpupower frequency-set -d {value}GHz > /dev/null 2>&1')
     else:
-        os.system(f'sudo cpupower -c {cores} frequency-set -d {value}GHz')
+        os.system(f'sudo cpupower -c {cores} frequency-set -d {value}GHz > /dev/null 2>&1')
 
 app = FastAPI()
 

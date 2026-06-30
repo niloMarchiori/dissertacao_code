@@ -1,39 +1,37 @@
 import shutil
 import os
 
-
-def read_energy():
-    """
-    Lê um valor float de um arquivo.
-
-    :param file_path: Caminho para o arquivo.
-    :return: Valor float lido ou None se houver erro.
-    """
-
-    # Caminho do arquivo de energia
-    file_path = "../tmp/consumption"
-
+def read_file(path):
     try:
-        if not os.path.exists(file_path):
+        if not os.path.exists(path):
             raise FileNotFoundError(
-                f"O arquivo {file_path} não foi encontrado.")
+                f"O arquivo {path} não foi encontrado.")
 
-        with open(file_path, 'r') as file:
+        with open(path, 'r') as file:
             content = file.read().strip()
 
         # Tenta converter o valor para float
         value = float(content)
         return value
     except ValueError:
-        print(f"Erro: O valor no arquivo {file_path} não é um float válido.")
+        print(f"Erro: O valor no arquivo {path} não é um float válido.")
     except FileNotFoundError as e:
         print(e)
     except Exception as e:
         print(f"Erro inesperado: {e}")
     return None
 
+def read_energy():
+    # Caminho do arquivo de energia
+    file_path = "../tmp/consumption"
+    return read_file(file_path)
+
 def read_cpu_voltage():
     file_path='../tmp/cpu_voltage'
+    return read_file(file_path)
+
+def read_cpu_freq():
+    file_path='../tmp/cpus_freqs'
     try:
         if not os.path.exists(file_path):
             raise FileNotFoundError(
@@ -42,15 +40,14 @@ def read_cpu_voltage():
         with open(file_path, 'r') as file:
             content = file.read().strip()
 
-        # Tenta converter o valor para float
-        value = float(content)
-        return value
-    except ValueError:
-        print(f"Erro: O valor no arquivo {file_path} não é um float válido.")
+        import ast
+        freqs = ast.literal_eval(content)
+        freqs = list(map(lambda x: round(x/1e6, 3), freqs))
+        return freqs
     except FileNotFoundError as e:
         print(e)
     except Exception as e:
-        print(f"Erro inesperado: {e}")
+        print(f"Erro ao ler cpus_freqs: {e}")
     return None
 
 def copiar_arquivo(origem, destino):

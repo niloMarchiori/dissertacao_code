@@ -126,6 +126,7 @@ def server():
         controller.output_data.curr_line[f'host_consumption_{m["id"]}']=m['host_energy_consumption']
         controller.output_data.curr_line[f'training_time_{m["id"]}']=m['training_time']
         controller.output_data.curr_line[f'cpu_voltage_{m["id"]}']=m['cpu_voltage']
+        controller.output_data.curr_line[f'cpus_freqs_{m["id"]}']=m['cpus_freqs']
 
 
     # callback for metricsQueue: get the metrics from each client after it finish its round

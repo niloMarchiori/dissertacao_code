@@ -1,5 +1,5 @@
 from asyncio import subprocess
-import re
+from collections import deque
 
 import subprocess
 from threading import Thread as thread
@@ -23,6 +23,9 @@ class EnergyFreqBased(object):
     thread_ = None
 
     def __init__(self, nodes):
+        # Histórico das últimas 3 medidas para suavização
+        self._freq_history = {node.name: deque(maxlen=3) for node in nodes}
+        self._voltage_history = deque(maxlen=3)
         EnergyFreqBased.thread_ = thread(target=self.start, args=(nodes,))
         EnergyFreqBased.thread_.daemon = True
         EnergyFreqBased.thread_._keep_alive = True
@@ -31,12 +34,13 @@ class EnergyFreqBased(object):
     def start(self, nodes):
         try:
             while self.thread_._keep_alive:
-                sleep(0.1)  # set sleep time to 1 second
+                sleep(0.1)
                 for node in nodes:
                     if(self.thread_._keep_alive):
-                        node.consumption += self.get_energy(node)
-        except:
-            error("Error with the energy consumption function\n")
+                        energy = self.get_energy(node)
+                        node.consumption += energy
+        except BaseException as e:
+            error(f"Energy consumption error: {e}\n")
 
     def get_cpu_freq(self, node):
         cores=node.resources.get('cpuset_cpus')
@@ -45,12 +49,15 @@ class EnergyFreqBased(object):
                 core_i=int(cores.split('-')[0])
                 core_f=int(cores.split('-')[1])
                 cores=','.join([str(i) for i in range(core_i, core_f+1)])
-            cores.split(',')
+            cores = cores.split(',')
             
             all_freq=[]
             for core in cores:
-                all_freq.append(int(node.pexec("cat /sys/devices/system/cpu/cpu{core}/cpufreq/scaling_cur_freq")))
+                stdout, stderr, rc = node.pexec(f"cat /sys/devices/system/cpu/cpu{core}/cpufreq/scaling_cur_freq")
+                all_freq.append(int(stdout.strip()))
             return all_freq
+        else:
+            return None
 
     def get_cpu_voltage(self):
         resultado = subprocess.run(
@@ -72,8 +79,24 @@ class EnergyFreqBased(object):
         Returns: float: EnergyFreqBased consumed in watt-hours (Wh).
         """
         current_datetime = datetime.now()
-        cpus_freqs = self.get_cpu_freq(node)
-        cpu_voltage = self.get_cpu_voltage()
+        cpus_freqs_raw = self.get_cpu_freq(node)
+        cpu_voltage_raw = self.get_cpu_voltage()
+
+        # Armazena medidas no histórico
+        self._freq_history[node.name].append(cpus_freqs_raw)
+        self._voltage_history.append(cpu_voltage_raw)
+
+        # Calcula média das últimas 3 medidas de frequência (por core)
+        freq_hist = list(self._freq_history[node.name])
+        num_cores = len(cpus_freqs_raw)
+        cpus_freqs = [
+            sum(sample[i] for sample in freq_hist) / len(freq_hist)
+            for i in range(num_cores)
+        ]
+
+        # Calcula média das últimas 3 medidas de tensão
+        volt_hist = list(self._voltage_history)
+        cpu_voltage = sum(volt_hist) / len(volt_hist)
         
         formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
 
