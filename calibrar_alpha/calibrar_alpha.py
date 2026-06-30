@@ -1,7 +1,12 @@
-from topo_wired import topology_wired as topology
-import random
-import numpy as np
+import sys
+import os
 
+# Adiciona o diretório raiz ao path para importar módulos compartilhados
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from shared.topo_wired import topology_wired as topology
+from server import api_communication
+import random
 
 
 NUM_ROUNDS=40
@@ -43,6 +48,7 @@ topology(server_script,
             client_script, 
             server_args,
             clients_args,
+            api_communication=api_communication,
             cpu_governor='performance',
             experiment_name=experiment_name,
             n_rounds=NUM_ROUNDS)

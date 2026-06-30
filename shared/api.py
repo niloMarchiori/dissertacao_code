@@ -70,4 +70,4 @@ def set_lower_freq(freq: Frequency,clients=Depends(call_sensor)):
     value=freq.value
     cores=freq.cores
     cmd_set_lower_freq(value, cores)
-    return {"msg": f"SET CPU -D FREQ={value}"}    
+    return {"msg": f"SET CPU -D FREQ={value}"}

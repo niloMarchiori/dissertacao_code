@@ -1,8 +1,7 @@
 import os
 import sys
 import threading
-import random
-import numpy as np
+import uvicorn
 
 from pathlib import Path
 from time import sleep
@@ -11,16 +10,34 @@ from mininet.log import info, setLogLevel
 from containernet.cli import CLI
 
 from federated.net import MininetFed
-from federated.node import Client, Server
+from federated.node import Client as ClientNode, Server
 
-from api import app, call_sensor, call_network
-from server import api_communication
+from .api import app, call_sensor, call_network
+from .energy import EnergyFreqBased
 
-import uvicorn
-import threading
+class Client(ClientNode):
+    def __init__(self, *args, **kwargs):
+        self.consumption = 0
+        self.voltage = 1.0
+        self.curret_freq = 0.8
+        super().__init__(*args, **kwargs)
 
 
-def topology_wired(server_script, client_script, server_args, clients_args, cpu_governor, experiment_name='Experiment', n_rounds=20):
+def topology_wired(server_script, client_script, server_args, clients_args, cpu_governor, 
+                   api_communication=None, experiment_name='Experiment', n_rounds=20):
+    """
+    Configura e executa a topologia Mininet com clientes e servidor.
+    
+    Args:
+        server_script: Caminho para o script do servidor
+        client_script: Caminho para o script do cliente
+        server_args: Argumentos do servidor
+        clients_args: Argumentos dos clientes
+        cpu_governor: Governador de CPU
+        api_communication: Módulo de comunicação da API (injetado pelo caller)
+        experiment_name: Nome do experimento
+        n_rounds: Número de rounds
+    """
     setLogLevel('info')
 
     volume = "/flw"
@@ -89,7 +106,7 @@ def topology_wired(server_script, client_script, server_args, clients_args, cpu_
     app.dependency_overrides[call_network] = pass_network
     app.dependency_overrides[call_sensor] = pass_clients
 
-    config = uvicorn.Config(app, host="0.0.0.0", port=8000)
+    config = uvicorn.Config(app, host="0.0.0.0", port=8000, log_level="error", access_log=False)
     server = uvicorn.Server(config)
 
     thread = threading.Thread(target=server.run)
@@ -100,7 +117,7 @@ def topology_wired(server_script, client_script, server_args, clients_args, cpu_
     # -----------------------------------------------------------------------------------------
 
     info("*** Measuring energy consumption\n")
-    
+    EnergyFreqBased(net.sensors)
 
     info('*** Running devices...\n')
     net.runFlDevices()
@@ -108,8 +125,10 @@ def topology_wired(server_script, client_script, server_args, clients_args, cpu_
     info('*** Running broker...\n')
 
     sleep(1)
-    
-    # CLI(net)
+
+    info(clients[0].resources)
+    info(srv1.resources)
+    CLI(net)
 
     info('*** Server...\n')
     srv1.run(broker_addr=net.broker_addr, experiment_controller=net.experiment_controller)
@@ -127,7 +146,9 @@ def topology_wired(server_script, client_script, server_args, clients_args, cpu_
     info('*** Stopping network...\n')
     net.stop()
 
-    api_communication.set_lower_frequency(freq=0.8)
-    api_communication.set_upper_frequency(freq=4.7)
+    if api_communication:
+        api_communication.set_lower_frequency(freq=0.8)
+        api_communication.set_upper_frequency(freq=4.7)
+    
     server.should_exit = True
     thread.join()

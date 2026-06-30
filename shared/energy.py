@@ -1,5 +1,7 @@
+from asyncio import subprocess
 import re
 
+import subprocess
 from threading import Thread as thread
 from datetime import datetime
 from time import sleep
@@ -14,8 +16,8 @@ class EnergyFreqBased(object):
             and Experimental Validation on Mobile Devices.
             https://doi.org/10.1007/978-3-642-55224-3_74
             ---
-            T. D. Burd and R. W. Brodersen(1996): “Processor Design for Portable
-            Systems”
+            T. D. Burd and R. W. Brodersen(1996): "Processor Design for Portable
+            Systems"
     '''
 
     thread_ = None
@@ -37,13 +39,25 @@ class EnergyFreqBased(object):
             error("Error with the energy consumption function\n")
 
     def get_cpu_freq(self, node):
-        cmd_out = node.pexec("cat /proc/cpuinfo | grep MHz", shell=True)[0]
-        try:
-            cmd_out_lines = cmd_out.strip().split('\n')
-            cmd_out_values = [float(line.split(':')[1].strip()) for line in cmd_out_lines]
-            return cmd_out_values
-        except:
-            return 0
+        cores=node.resources.get('cpuset_cpus')
+        if cores:
+            if '-' in cores:
+                core_i=int(cores.split('-')[0])
+                core_f=int(cores.split('-')[1])
+                cores=','.join([str(i) for i in range(core_i, core_f+1)])
+            cores.split(',')
+            
+            all_freq=[]
+            for core in cores:
+                all_freq.append(int(node.pexec("cat /sys/devices/system/cpu/cpu{core}/cpufreq/scaling_cur_freq")))
+            return all_freq
+    def get_cpu_voltage(self):
+        resultado = subprocess.run(
+            'echo "scale=2; $(sudo rdmsr 0x198 -u --bitfield 47:32)/8192" | bc', 
+            shell=True, 
+            capture_output=True, 
+            text=True)
+        return float(resultado.stdout.strip())
 
 
     def get_energy(self, node, alpha=1E-18, N=4.18E9):
