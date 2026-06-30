@@ -125,10 +125,8 @@ def server():
 
         controller.output_data.curr_line[f'host_consumption_{m["id"]}']=m['host_energy_consumption']
         controller.output_data.curr_line[f'training_time_{m["id"]}']=m['training_time']
+        controller.output_data.curr_line[f'cpu_voltage_{m["id"]}']=m['cpu_voltage']
 
-
-    # def create_string_from_json(data):
-    #     return " - ".join(f"{name}: {value}" for name, value in data.items())
 
     # callback for metricsQueue: get the metrics from each client after it finish its round
     def on_message_metrics(client, userdata, message):

@@ -51,6 +51,7 @@ class EnergyFreqBased(object):
             for core in cores:
                 all_freq.append(int(node.pexec("cat /sys/devices/system/cpu/cpu{core}/cpufreq/scaling_cur_freq")))
             return all_freq
+
     def get_cpu_voltage(self):
         resultado = subprocess.run(
             'echo "scale=2; $(sudo rdmsr 0x198 -u --bitfield 47:32)/8192" | bc', 
@@ -72,9 +73,15 @@ class EnergyFreqBased(object):
         """
         current_datetime = datetime.now()
         cpus_freqs = self.get_cpu_freq(node)
+        cpu_voltage = self.get_cpu_voltage()
+        
         formatted_datetime = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+
         node.pexec('echo {} > /tmp/consumption'.format(node.consumption), shell=True)
-        power = sum([N*alpha * freq * 1E6 * node.voltage**2 for freq in cpus_freqs])  # Power in watts
+        node.pexec('echo {} > /tmp/cpu_voltage'.format(cpu_voltage), shell=True)
+        node.pexec('echo {} > /tmp/cpus_freqs'.format(cpus_freqs), shell=True)
+
+        power = sum([N*alpha * freq * 1E6 * cpu_voltage**2 for freq in cpus_freqs])  # Power in watts
         power_converted = power * 0.1 / 3600  # Converts to watt-hours (Wh) considering a 1-second interval
         node.pexec('echo {},{} >> /tmp/consumption-cpu'.format(formatted_datetime, power_converted), shell=True)
         return power_converted
