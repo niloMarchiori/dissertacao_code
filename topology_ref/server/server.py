@@ -214,8 +214,6 @@ def server():
         logger.info(f"n_selected: {len(select_trainers)}", extra=metricType)
         logger.info(
             f"{json.dumps({'selected_trainers': select_trainers})}", extra=metricType)
-        
-        time_start=time.time()
 
 
         for t in trainer_list:
@@ -233,9 +231,6 @@ def server():
             else:
                 m = json.dumps({'id': t, 'selected': False}).replace(' ', '')
                 client.publish('minifed/selectionQueue', m)
-
-        round_time=time.time()-time_start
-        controller.output_data.curr_line['round_time']=round_time
 
         # wait for agg responses
         while controller.get_num_responses() != selected_qtd:
