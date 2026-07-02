@@ -22,7 +22,11 @@ class EnergyFreqBased(object):
 
     thread_ = None
 
-    def __init__(self, nodes):
+    def __init__(self, nodes, log_dir='./'):
+        import os
+        self.log_dir = log_dir
+        os.makedirs(self.log_dir, exist_ok=True)
+        self.run_id = datetime.now().strftime("%H%M%S")
         # Histórico das últimas 3 medidas para suavização
         self._freq_history = {node.name: deque(maxlen=3) for node in nodes}
         self._voltage_history = deque(maxlen=3)
@@ -108,8 +112,8 @@ class EnergyFreqBased(object):
         gamma = getattr(node, 'gamma', None)
         alpha = getattr(node, 'alpha', None)
         
-        # with open('energy_debug.log', 'a') as f:
-        #     f.write(f"[{formatted_datetime}] Node: {node.name} | alpha: {alpha} | cpu_voltage: {cpu_voltage} | freq: {cpus_freqs}\n")
+        with open(f'{self.log_dir}/energy_debug.log', 'a') as f:
+            f.write(f"[{formatted_datetime}] Node: {node.name} | alpha: {alpha} | cpu_voltage: {cpu_voltage} | freq: {cpus_freqs}\n")
 
         power = (1+node.gamma*cpu_voltage)*node.alpha*freq*(10**9)*cpu_voltage**2  # Power in watts
         power_converted = power * 0.1 / 3600  # Converts to watt-hours (Wh) considering a 1-second interval

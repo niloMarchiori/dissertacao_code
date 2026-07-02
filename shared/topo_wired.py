@@ -120,10 +120,19 @@ def topology_wired(server_script, client_script, server_args, clients_args, cpu_
     sleep(3)
     print("API is running...")
     api_communication.set_cpu_governor(governor=cpu_governor)
+    info("Setting cpu fre ")
+    
+    for client in clients_args:
+        fmin=client['fmin']
+        fmax=client['fmax']
+        core=client['cpuset_cpus']
+        api_communication.set_lower_frequency(freq=fmin,cores=core)
+        api_communication.set_upper_frequency(freq=fmax,cores=core)
+
     # -----------------------------------------------------------------------------------------
 
     info("*** Measuring energy consumption\n")
-    EnergyFreqBased(clients)
+    EnergyFreqBased(clients,log_dir=server_args['output_dir_name'])
 
     info('*** Running devices...\n')
     net.runFlDevices()
