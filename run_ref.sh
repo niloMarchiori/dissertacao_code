@@ -3,7 +3,7 @@
 # Script to run calibrar_alpha.py 5 times sequentially with mnf_clean between runs
 # Execute with: sudo -E ./run_calibrar_5times.sh
 
-for i in {1..1}; do
+for i in {1..4}; do
     echo "=========================================="
     echo "Running iteration $i of 5..."
     echo "=========================================="
