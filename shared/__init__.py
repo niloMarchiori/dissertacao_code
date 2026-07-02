@@ -6,7 +6,6 @@ Contém componentes reutilizáveis como energia, API, topologia e utilitários.
 from .energy import EnergyFreqBased
 from .api import app, call_sensor, call_network, cmd_set_freq, cmd_set_cpu_governor, cmd_set_upper_freq, cmd_set_lower_freq
 from .topo_wired import topology_wired
-from .analyze_energy_log import EnergyLogAnalyzer
 
 __all__ = [
     'EnergyFreqBased',
@@ -17,6 +16,5 @@ __all__ = [
     'cmd_set_cpu_governor',
     'cmd_set_upper_freq',
     'cmd_set_lower_freq',
-    'topology_wired',
-    'EnergyLogAnalyzer'
+    'topology_wired'
 ]

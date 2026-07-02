@@ -220,15 +220,13 @@ def server():
             if t in select_trainers:
                 print(f'selected trainer {t} for training on round {controller.get_current_round()}')
                 m = json.dumps({'id': t, 'selected': True}).replace(' ', '')
-
-                fmin=controller.clients[t]['fmin']
-                fmax=controller.clients[t]['fmax']
-                core=controller.clients[t]['cpuset_cpus']
-                api_communication.set_lower_frequency(freq=fmin,cores=core)
-                api_communication.set_upper_frequency(freq=fmax,cores=core)
                 client.publish('minifed/selectionQueue', m)
 
             else:
+                #set max frequency to non selected trainers
+                fmin=controller.clients[t]['fmin']
+                core=controller.clients[t]['cpuset_cpus']
+                api_communication.set_upper_frequency(freq=fmin,cores=core)
                 m = json.dumps({'id': t, 'selected': False}).replace(' ', '')
                 client.publish('minifed/selectionQueue', m)
 
@@ -236,6 +234,12 @@ def server():
         while controller.get_num_responses() != selected_qtd:
             time.sleep(1)
         controller.reset_num_responses()  # reset num_responses for next round
+
+        #free frequencies
+        for t in trainer_list:
+            fmax=controller.clients[t]['fmax']
+            core=controller.clients[t]['cpuset_cpus']
+            api_communication.set_frequency(freq=fmax,cores=core)
 
         # aggregate and send
         agg_response = controller.agg_weights()
