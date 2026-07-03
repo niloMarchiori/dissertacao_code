@@ -8,7 +8,7 @@ import json
 from shared.topo_wired import topology_wired as topology
 from server import api_communication
 
-NUM_ROUNDS=50
+NUM_ROUNDS=5
 
 with open('topology_ref/sta_const.json') as f:
     sta_const = json.load(f)
@@ -40,7 +40,7 @@ server_args = {"min_trainers": NUM_CLIENTS,
                 'aggregator': "FedAvg",
                 'clients_args': clients_args,
                 "output_dir_name":'Results/iid_leastEnergy/',
-                "output_csv_name":"metrics_leastEnergy_all.csv"}
+                "output_csv_name":"metrics_iid_leastEnergy_all.csv"}
 
 
 experiment_name = 'energy_padrao'

@@ -8,7 +8,7 @@ from shared.topo_wired import topology_wired as topology
 from server import api_communication
 import json
 
-NUM_ROUNDS=50
+NUM_ROUNDS=5
 
 with open('topology_ref/sta_const.json') as f:
     sta_const = json.load(f)
