@@ -75,15 +75,7 @@ O intúito dessa pesquisa é utilizar-se da ferramenta MininetFed para emular a 
 
 ## To do:
 Em andamento:
-- [x] Debugar o motivo de select by leastEnergy selecionar todos os dispositivos
-- [x] Número de épocas e rodadas limitadas pela acc_local e T_cmp
-- [ ] Server deve passar T_cmp para client
-- [ ] Plotar acc baseada em T_cmp
-- [ ] Executar para consumo de energia padrao
-    
-Standy: 
-- [ ] Validação assíncrona
-- [ ] Passar range_freq no client_args/on_message_register
+- [ ] Os argumentos dos clientes estão desordenados no controller
 
 ### Problemas
 
