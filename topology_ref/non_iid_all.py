@@ -8,7 +8,7 @@ from shared.topo_wired import topology_wired as topology
 from server import api_communication
 import json
 
-NUM_ROUNDS=5
+NUM_ROUNDS=70
 
 with open('topology_ref/sta_const.json') as f:
     sta_const = json.load(f)
@@ -19,7 +19,7 @@ clients_args=[]
 for i in range(NUM_CLIENTS):
     client_args = {'name': f'sta{i}',
                     "mode": 'n_classes random same_samples',
-                    'n_classes_per_trainer':3,
+                    'n_classes_per_trainer':4,
                     "trainer_class": "TrainerMNIST", 
                     'num_samples':sta_const['num_samples'][i],
                     "alpha": sta_const['alpha'][i],
@@ -44,7 +44,7 @@ server_args = {"min_trainers": NUM_CLIENTS,
                 "output_csv_name":"metrics_non-iid_all.csv"}
 
 
-experiment_name = 'energy_padrao'
+experiment_name = 'non_iid_all'
 
 client_script="flw/topology_ref/client/client.py"
 server_script="flw/topology_ref/server/server.py"
