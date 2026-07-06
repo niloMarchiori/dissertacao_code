@@ -191,23 +191,6 @@ def server():
 
     controller.instanceate_afea_parameters()
 
-    for t in trainer_list:
-            print(f'''
-
-            client: {t}
-            ****************************************
-            name: {controller.clients[t]['name']}
-            cores: {controller.clients[t]['cpuset_cpus']}
-            fmin: {controller.clients[t]['fmin']}
-            fmax: {controller.clients[t]['fmax']}
-
-
-            ----------------------------------------
-            ''', file=sys.stderr)
-
-
-
-
     while controller.get_current_round() != nun_rounds:
         controller.update_current_round()
         logger.info(f'ACC {controller.theta_prev}', extra=metricType)

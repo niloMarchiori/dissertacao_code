@@ -121,19 +121,6 @@ def topology_wired(server_script, client_script, server_args, clients_args, cpu_
     print("API is running...")
     api_communication.set_cpu_governor(governor=cpu_governor)
     info("Setting cpu fre ")
-    
-    i=0
-    for client in clients_args:
-        fmin=client['fmin']
-        fmax=client['fmax']
-        core=client['cpuset_cpus']
-        print(f"ARGS-CLIENTE {i}- CORES: {core}, FMIN: {fmin}, FMAX: {fmax}")
-        
-        
-        print(f"{clients[i].args} - CORES: {core}, FMIN: {fmin}, FMAX: {fmax}")
-
-        i+=1
-
     # -----------------------------------------------------------------------------------------
 
     info("*** Measuring energy consumption\n")

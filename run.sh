@@ -8,8 +8,11 @@ for i in {1..1}; do
     echo "Running iteration $i of 5..."
     echo "=========================================="
     mnf_clean
-    sleep 2
+    sleep 1
     python topology_afea/non_iid_afea.py
+    mnf_clean
+    sleep 1
+    python topology_afea/iid_afea.py
 done
 
 echo "=========================================="

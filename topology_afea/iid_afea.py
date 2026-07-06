@@ -18,8 +18,7 @@ NUM_CLIENTS=sta_const['N']
 clients_args=[]
 for i in range(NUM_CLIENTS):
     client_args = {'name': f'sta{i}',
-                    "mode": 'n_classes random same_samples',
-                    'n_classes_per_trainer':4,
+                    "mode": 'random same_samples',
                     "trainer_class": "TrainerMNIST", 
                     'num_samples':sta_const['num_samples'][i],
                     "alpha": sta_const['alpha'][i],
@@ -40,7 +39,7 @@ server_args = {"min_trainers": NUM_CLIENTS,
                 'client_selector': 'All', 
                 'aggregator': "FedAvg",
                 'clients_args': clients_args,
-                "output_dir_name":'Results/non_iid_afea/',
+                "output_dir_name":'Results/iid_afea/',
                 "output_csv_name":"metrics_afea.csv"}
 
 
