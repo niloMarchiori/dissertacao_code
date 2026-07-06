@@ -103,7 +103,7 @@ class Controller:
 
     def add_trainer(self, trainer_id):
         self.trainer_list.append(trainer_id)
-        self.trainer_list.sort()
+        self.trainer_list.sort(key=lambda x: int(x[3:]))
 
     def add_client_training_response(self, id, response):
         self.client_training_response[id] = response
@@ -197,15 +197,6 @@ class Controller:
         )
 
     def run_opt_model(self):
-        print(f"N={self.instance.problem.N},\n \
-                    alpha={self.instance.problem.alpha}, \n \
-                    c={self.instance.problem.c}, \n \
-                    S={self.instance.problem.S}, \n \
-                    f_min={self.instance.problem.f_min}, \n \
-                    f_max={self.instance.problem.f_max}, \
-                    \n epsilon_0={self.instance.problem.epsilon_0}, \n \
-                    theta_prev={self.instance.problem.theta_prev}, \n \
-                    beta_h={self.instance.problem.beta_h}",file=sys.stderr)
         self.instance.theta_prev = self.theta_prev
 
         print("Iniciando a otimização com 3 objetivos...")
@@ -213,26 +204,14 @@ class Controller:
 
         if res is None or res.F is None or len(res.F) == 0:
             print("Nenhuma solução viável foi encontrada.", file=sys.stderr)
-
-            trainer_list = self.get_trainer_list()
-            cpu_frequency = {t: self.clients[t]["fmin"] for t in trainer_list}
-            select_trainers_bool = np.ones(len(trainer_list), dtype=bool)
-            tgt_acc = {t: float(self.theta_prev[i]) for i, t in enumerate(trainer_list)}
-            time_limit = 1.0
-            n_epochs = {t: 1 for t in trainer_list}
-            return cpu_frequency, select_trainers_bool, tgt_acc, time_limit, n_epochs
+            return None,None,None,None,None
 
         pesos = [0.4, 0.2, 0.4]
         idx = self.instance.mcdm_pseudo_weights(pesos, verbose=True)
 
         if idx is None:
-            trainer_list = self.get_trainer_list()
-            cpu_frequency = {t: self.clients[t]["fmin"] for t in trainer_list}
-            select_trainers_bool = np.ones(len(trainer_list), dtype=bool)
-            tgt_acc = {t: float(self.theta_prev[i]) for i, t in enumerate(trainer_list)}
-            time_limit = 1.0
-            n_epochs = {t: 1 for t in trainer_list}
-            return cpu_frequency, select_trainers_bool, tgt_acc, time_limit, n_epochs
+            print(f'Nenhuma solução atendeu os peos {pesos}', file=sys.stderr)
+            return None, None, None, None, None
 
         solucao_vars = res.X[idx]
 

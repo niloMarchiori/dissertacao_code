@@ -27,12 +27,7 @@ def default(obj):
 
 FORMAT = "%(asctime)s - %(infotype)-6s - %(levelname)s - %(message)s"
 
-global MODEL_TRAINED 
-MODEL_TRAINED = False
-
-
 def server():
-    global MODEL_TRAINED
 
     # total args
     os.umask(0o000)
@@ -189,15 +184,34 @@ def server():
     
     # begin training
     collums=['mean_acc']
-    collums+=[f'freq_{t}' for t in controller.get_trainer_list()]
-    collums+=[f'consumption_{t}' for t in controller.get_trainer_list()]
+    collums+=[f'freq_{t}' for t in trainer_list]
+    collums+=[f'consumption_{t}' for t in trainer_list]
 
     selected_qtd = 0
 
     controller.instanceate_afea_parameters()
+
+    for t in trainer_list:
+            print(f'''
+
+            client: {t}
+            ****************************************
+            name: {controller.clients[t]['name']}
+            cores: {controller.clients[t]['cpuset_cpus']}
+            fmin: {controller.clients[t]['fmin']}
+            fmax: {controller.clients[t]['fmax']}
+
+
+            ----------------------------------------
+            ''', file=sys.stderr)
+
+
+
+
     while controller.get_current_round() != nun_rounds:
         controller.update_current_round()
         logger.info(f'ACC {controller.theta_prev}', extra=metricType)
+
         cpu_frequency,select_trainers_bool,tgt_acc,time_limit,n_epochs = controller.run_opt_model()
         
 
