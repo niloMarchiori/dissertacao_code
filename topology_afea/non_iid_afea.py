@@ -8,7 +8,7 @@ from shared.topo_wired import topology_wired as topology
 from server import api_communication
 import json
 
-NUM_ROUNDS=2
+NUM_ROUNDS=70
 
 with open('topology_afea/sta_const.json') as f:
     sta_const = json.load(f)

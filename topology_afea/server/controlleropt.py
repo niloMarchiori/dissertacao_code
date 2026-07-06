@@ -206,7 +206,7 @@ class Controller:
             print("Nenhuma solução viável foi encontrada.", file=sys.stderr)
             return None,None,None,None,None
 
-        pesos = [0.4, 0.2, 0.4]
+        pesos = [0.2, 0.7, 0.1]
         idx = self.instance.mcdm_pseudo_weights(pesos, verbose=True)
 
         if idx is None:
