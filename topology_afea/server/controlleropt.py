@@ -4,7 +4,7 @@ from aggregator import *
 import importlib
 from datetime import datetime
 
-from AFEA_Optmizer import AFEA
+from AFEA_Optmizer.FLPOPT import FLPOPT as AFEA
 
 import pathlib
 import json
@@ -111,11 +111,6 @@ class Controller:
     def add_accuracy(self, acc):
         self.acc_list.append(acc)
 
-    # operations
-
-    def select_trainers_for_round(self):
-        return self.clientSelection.select_trainers_for_round(self.trainer_list, self.metrics)
-
     def agg_weights(self) -> dict:
         # Aggregate the models recived from clients
         agg_response = {}
@@ -197,22 +192,21 @@ class Controller:
         )
 
     def run_opt_model(self):
-        self.instance.theta_prev = self.theta_prev
-
         print("Iniciando a otimização com 3 objetivos...")
-        res = self.instance.solve(n_gen=200, pop_size=100)
+        res = self.instance.solve(n_gen=200, pop_size=100, theta_prev= self.theta_prev)
 
         if res is None or res.F is None or len(res.F) == 0:
             print("Nenhuma solução viável foi encontrada.", file=sys.stderr)
             return None,None,None,None,None
 
-        pesos = [0.2, 0.7, 0.1]
+        pesos = [0.2, 0.4, 0.4]
         idx = self.instance.mcdm_pseudo_weights(pesos, verbose=True)
 
         if idx is None:
             print(f'Nenhuma solução atendeu os peos {pesos}', file=sys.stderr)
             return None, None, None, None, None
 
+        self.instance.advance_round(idx)
         solucao_vars = res.X[idx]
 
         f_n = {}
@@ -220,14 +214,13 @@ class Controller:
         theta_n = {}
         psi_n = {}
         for i, t in enumerate(self.get_trainer_list()):
-            f_n[t] = round(solucao_vars[f"f_{i}"] * 10**(-9), 3)
+            f_n[t] = round(solucao_vars[f"f_{i}"] * 1e-9, 3)
             beta_n[t] = solucao_vars[f"beta_{i}"]
             theta_n[t] = solucao_vars[f"theta_{i}"]
             psi_n[t] = solucao_vars[f"psi_{i}"]
 
-        self.instance.beta_h += 1 - np.array([beta_n[t] for t in self.trainer_list])
-
         T = solucao_vars["T"]
+
         return f_n, beta_n, theta_n, T, psi_n
         
         
