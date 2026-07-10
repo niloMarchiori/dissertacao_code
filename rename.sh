@@ -1,10 +1,10 @@
 #!/bin/bash
 
-cd /home/nilo/Documents/dissertacao_code_ref/Analise/iid_all || exit 1
+cd ./Analise/non_iid_afea || exit 1
 
 i=1
-for f in *metrics_all.csv; do
-  mv -- "$f" "metrics_iid_all_${i}.csv"
+for f in *_metrics_afea.csv; do
+  mv -- "$f" "metrics_non_iid_afea_${i}.csv"
   ((i++))
 done
 
