@@ -38,7 +38,7 @@ class EnergyFreqBased(object):
     def start(self, nodes):
         try:
             while self.thread_._keep_alive:
-                sleep(0.1)
+                sleep(0.5)
                 for node in nodes:
                     if(self.thread_._keep_alive):
                         energy = self.get_energy(node)
@@ -72,7 +72,7 @@ class EnergyFreqBased(object):
         return float(resultado.stdout.strip())
 
 
-    def get_energy(self, node, alpha=1E-18, N=4.18E9):
+    def get_energy(self, node):
         """
         Calculates power consumption based on voltage, cpu frequency, and hardware constants.
 
@@ -116,6 +116,6 @@ class EnergyFreqBased(object):
             f.write(f"[{formatted_datetime}] Node: {node.name} | alpha: {alpha} | cpu_voltage: {cpu_voltage} | freq: {cpus_freqs}\n")
 
         power = (1+node.gamma*cpu_voltage)*node.alpha*freq*(10**9)*cpu_voltage**2  # Power in watts
-        power_converted = power * 0.1 / 3600  # Converts to watt-hours (Wh) considering a 1-second interval
+        power_converted = power * 0.5 / 3600  # Converts to watt-hours (Wh) considering a 0.5-second interval
         node.pexec('echo {},{} >> /tmp/consumption-cpu'.format(formatted_datetime, power_converted), shell=True)
         return power_converted
