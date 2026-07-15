@@ -277,15 +277,3 @@ class TrainerMNIST:
         total_bits = num_params * bits_per_param
         
         return total_bits
-
-
-if __name__ == '__main__':
-    trainer = TrainerCifar(0, 'random')
-    # x_train, y_train, x_test, y_test = trainer.load_data()
-    print(trainer.x_train.shape, trainer.y_train.shape,
-          trainer.x_test.shape, trainer.y_test.shape)
-    acc = 0.0
-    while acc < 0.9:
-        trainer.train_model()
-        acc = trainer.eval_model()
-        print(acc)
