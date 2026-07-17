@@ -75,7 +75,9 @@ O intúito dessa pesquisa é utilizar-se da ferramenta MininetFed para emular a 
 
 ## To do:
 Em andamento:
-- [ ] Os argumentos dos clientes estão desordenados no controller
+- [ ] Pensando em mudar como S_z é calculadao
+- [ ] Implementar acc individual na tabela de dados
+- [ ] Implementa outras métricas 
 
 ### Problemas
 
