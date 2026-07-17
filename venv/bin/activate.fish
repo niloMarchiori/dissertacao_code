@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV /home/nilo/Documents/dissertacao_code_calibrar_constantes/venv
+set -gx VIRTUAL_ENV /home/nilo/Documents/dissertacao_code/venv
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/"bin $PATH

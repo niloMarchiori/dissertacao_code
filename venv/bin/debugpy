@@ -1,4 +1,4 @@
-#!/home/nilo/Documents/dissertacao_code_calibrar_constantes/venv/bin/python
+#!/home/nilo/Documents/dissertacao_code/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
